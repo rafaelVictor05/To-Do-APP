@@ -11,10 +11,9 @@ public partial class App : Application
 
         // --- PÁGINA DE PENDENTES ---
         var pendingPage = serviceProvider.GetService<TaskListPage>();
-        // Define o título da BARRA DE NAVEGAÇÃO (no topo da tela)
         pendingPage.Title = "To-do App";
+        pendingPage.ShowCompletedTasks = false; // 
 
-        // Cria a NavigationPage que será a ABA e define o TÍTULO DA ABA
         var navPending = new NavigationPage(pendingPage)
         {
             Title = "Pendentes"
@@ -23,10 +22,9 @@ public partial class App : Application
 
         // --- PÁGINA DE CONCLUÍDAS ---
         var completedPage = serviceProvider.GetService<TaskListPage>();
-        // Define o título da BARRA DE NAVEGAÇÃO (no topo da tela)
         completedPage.Title = "To-do App";
+        completedPage.ShowCompletedTasks = true; //
 
-        // Cria a NavigationPage que será a ABA e define o TÍTULO DA ABA
         var navCompleted = new NavigationPage(completedPage)
         {
             Title = "Concluídas"
@@ -38,10 +36,10 @@ public partial class App : Application
         tabbedPage.Children.Add(navPending);
         tabbedPage.Children.Add(navCompleted);
 
-
+        // Estilo das abas que está funcionando para você
         tabbedPage.BarBackgroundColor = Colors.Black;
-        tabbedPage.UnselectedTabColor = Colors.Grey; // Cinza para contraste com o fundo preto
-        tabbedPage.SelectedTabColor = Colors.White;    // Branco para contraste máximo
+        tabbedPage.UnselectedTabColor = Colors.Grey;
+        tabbedPage.SelectedTabColor = Colors.White;
 
 
         MainPage = tabbedPage;
