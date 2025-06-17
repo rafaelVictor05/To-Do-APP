@@ -20,25 +20,28 @@ public partial class TasksViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task GetTasksAsync()
+    public async Task GetTasksAsync()
     {
         try
         {
             var tasks = await ApiService.GetTasksAsync();
-            PendingTasks.Clear();
-            CompletedTasks.Clear();
 
-            foreach (var task in tasks.OrderBy(t => t.Name))
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                if (task.IsCompleted)
+                PendingTasks.Clear();
+                CompletedTasks.Clear();
+                foreach (var task in tasks.OrderByDescending(t => t.Id))
                 {
-                    CompletedTasks.Add(task);
+                    if (task.IsCompleted)
+                    {
+                        CompletedTasks.Add(task);
+                    }
+                    else
+                    {
+                        PendingTasks.Add(task);
+                    }
                 }
-                else
-                {
-                    PendingTasks.Add(task);
-                }
-            }
+            });
         }
         catch (Exception ex)
         {
@@ -51,25 +54,41 @@ public partial class TasksViewModel : ObservableObject
     {
         if (task is null) return;
 
-        task.IsCompleted = !task.IsCompleted;
-        await ApiService.UpdateTaskAsync(task);
+        // O binding do Switch já alterou a propriedade 'task.IsCompleted'.
+        // Agora, nós apenas movemos o item entre as listas com base no seu NOVO estado.
+        // Isso evita a 'race condition' e a lógica conflitante.
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            if (task.IsCompleted)
+            {
+                // Se a tarefa agora está marcada como COMPLETA,
+                // ela deve ser movida da lista de PENDENTES para a de CONCLUÍDAS.
+                if (PendingTasks.Remove(task))
+                {
+                    CompletedTasks.Add(task);
+                }
+            }
+            else
+            {
+                // Se a tarefa agora está marcada como PENDENTE,
+                // ela deve ser movida da lista de CONCLUÍDAS para a de PENDENTES.
+                if (CompletedTasks.Remove(task))
+                {
+                    PendingTasks.Add(task);
+                }
+            }
+        });
 
-        // Move a tarefa entre as listas na UI
-        if (task.IsCompleted)
+        try
         {
-            if (PendingTasks.Contains(task))
-            {
-                PendingTasks.Remove(task);
-                CompletedTasks.Add(task);
-            }
+            // A chamada para a API agora envia o estado correto da tarefa.
+            await ApiService.UpdateTaskAsync(task);
         }
-        else
+        catch (Exception ex)
         {
-            if (CompletedTasks.Contains(task))
-            {
-                CompletedTasks.Remove(task);
-                PendingTasks.Add(task);
-            }
+            System.Diagnostics.Debug.WriteLine($"Erro ao atualizar tarefa na API: {ex.Message}");
+            // Opcional: Adicionar lógica para reverter a troca na UI se a API falhar.
+            // Para o seu prazo, podemos deixar sem a reversão.
         }
     }
 }

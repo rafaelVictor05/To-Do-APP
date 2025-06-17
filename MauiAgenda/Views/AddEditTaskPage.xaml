@@ -12,6 +12,12 @@
             <Label Text="Concluída:" />
             <Switch IsToggled="{Binding IsCompleted}" />
         </StackLayout>
-        <Button Text="Salvar" Clicked="OnSaveButton_Clicked" />
+        <Button Text="Salvar"
+        Command="{Binding SaveTaskCommand}"
+        Clicked="OnSaveButton_Clicked" 
+        BackgroundColor="Green"
+        TextColor="White"
+        FontAttributes="Bold"
+        Margin="0,20,0,0" />
     </StackLayout>
 </ContentPage>

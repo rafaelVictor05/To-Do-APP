@@ -21,10 +21,12 @@ public partial class AddEditTaskViewModel : ObservableObject
     bool isCompleted;
 
     private readonly ApiService _apiService;
+    private readonly TasksViewModel _tasksViewModel;
 
-    public AddEditTaskViewModel(ApiService apiService)
+    public AddEditTaskViewModel(ApiService apiService, TasksViewModel tasksViewModel)
     {
         _apiService = apiService;
+        _tasksViewModel = tasksViewModel;
     }
 
     public void SetTask(TaskItem task)
@@ -48,13 +50,14 @@ public partial class AddEditTaskViewModel : ObservableObject
 
         if (string.IsNullOrEmpty(task.Id))
         {
-            // Criar nova tarefa
             await _apiService.AddTaskAsync(task);
         }
         else
         {
-            // Atualizar tarefa existente
             await _apiService.UpdateTaskAsync(task);
         }
+
+        // Avisa o ViewModel principal para recarregar a lista
+        await _tasksViewModel.GetTasksCommand.ExecuteAsync(null);
     }
 }
