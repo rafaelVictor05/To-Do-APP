@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:MauiAgenda.Models"
+             xmlns:local="clr-namespace:MauiAgenda.Views"
+             x:Class="MauiAgenda.Views.TaskListPage">
+
+    <NavigationPage.TitleView>
+        <Label Text="To-do App" TextColor="Black" FontSize="20" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" />
+    </NavigationPage.TitleView>
+
+    <Grid RowDefinitions="*, Auto">
+        <CollectionView ItemsSource="{Binding TaskSource, Source={RelativeSource AncestorType={x:Type local:TaskListPage}}}" Grid.Row="0" Margin="5">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TaskItem">
+                    <Border Stroke="LightGray" StrokeThickness="1" Padding="15" Margin="10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8"/>
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="*, Auto, Auto, Auto" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="5" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontSize="Large" FontAttributes="Bold" TextColor="Purple"/>
+                                <Label Text="{Binding Description}" FontSize="Small" TextColor="MintCream"/>
+                            </VerticalStackLayout>
+                            <Switch Grid.Column="1" IsToggled="{Binding IsCompleted}" Toggled="OnTaskToggled" VerticalOptions="Center"/>
+                            <Button Grid.Column="2" Text="Editar" Clicked="OnEditButton_Clicked" CommandParameter="{Binding .}" BackgroundColor="Purple" TextColor="White" CornerRadius="20" FontAttributes="Bold"/>
+                            <Button Grid.Column="3" Text="Excluir" Clicked="OnDeleteButton_Clicked" CommandParameter="{Binding .}" BackgroundColor="Red" TextColor="White" CornerRadius="20" FontAttributes="Bold"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Grid.Row="1" Text="Adicionar Nova Tarefa" Clicked="OnAddButton_Clicked" Margin="10" FontAttributes="Bold" BackgroundColor="#3498DB" TextColor="White"/>
+    </Grid>
+</ContentPage>
