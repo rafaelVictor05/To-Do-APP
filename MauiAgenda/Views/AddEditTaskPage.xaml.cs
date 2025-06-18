@@ -19,7 +19,6 @@ public partial class AddEditTaskPage : ContentPage
         _viewModel.SetTask(task);
     }
 
-    // ESTE MÉTODO É RESPONSÁVEL POR FECHAR A PÁGINA 
     async void OnSaveButton_Clicked(object sender, EventArgs e)
     {
         // Espera o comando SaveTaskCommand terminar de executar
@@ -30,7 +29,6 @@ public partial class AddEditTaskPage : ContentPage
 
         await _viewModel.SaveTaskCommand.ExecuteAsync(null);
 
-        // Garante que a navegação ocorra na thread da UI para evitar erros
         if (Navigation.NavigationStack.Count > 1)
         {
             MainThread.BeginInvokeOnMainThread(async () =>

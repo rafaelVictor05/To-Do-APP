@@ -57,7 +57,6 @@ public partial class AddEditTaskViewModel : ObservableObject
             await _apiService.UpdateTaskAsync(task);
         }
 
-        // Avisa o ViewModel principal para recarregar a lista
         await _tasksViewModel.GetTasksCommand.ExecuteAsync(null);
     }
 }

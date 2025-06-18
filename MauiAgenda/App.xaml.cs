@@ -36,7 +36,6 @@ public partial class App : Application
         tabbedPage.Children.Add(navPending);
         tabbedPage.Children.Add(navCompleted);
 
-        // Estilo das abas que está funcionando para você
         tabbedPage.BarBackgroundColor = Colors.Black;
         tabbedPage.UnselectedTabColor = Colors.Grey;
         tabbedPage.SelectedTabColor = Colors.White;
