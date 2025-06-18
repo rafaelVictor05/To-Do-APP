@@ -21,20 +21,37 @@ public partial class AddEditTaskPage : ContentPage
 
     async void OnSaveButton_Clicked(object sender, EventArgs e)
     {
-        // Espera o comando SaveTaskCommand terminar de executar
-        if (_viewModel.SaveTaskCommand.IsRunning)
+        if (string.IsNullOrWhiteSpace(_viewModel.Name) || string.IsNullOrWhiteSpace(_viewModel.Description))
         {
-            return; // Evita cliques duplos
+            await DisplayAlert("Campos Obrigatórios", "Por favor, preencha o nome e a descrição da tarefa.", "OK");
+            return;
         }
 
-        await _viewModel.SaveTaskCommand.ExecuteAsync(null);
+        var saveButton = sender as Button;
+        try
+        {
+            if (saveButton != null) saveButton.IsEnabled = false;
 
+            await _viewModel.SaveTaskCommand.ExecuteAsync(null);
+
+            await DisplayAlert("Sucesso", "Tarefa salva!", "OK");
+
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", $"Não foi possível salvar a tarefa: {ex.Message}", "OK");
+        }
+        finally
+        {
+            if (saveButton != null) saveButton.IsEnabled = true;
+        }
+    }
+
+    async void OnCancelButton_Clicked(object sender, EventArgs e)
+    {
         if (Navigation.NavigationStack.Count > 1)
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Navigation.PopAsync();
-            });
+            await Navigation.PopAsync();
         }
     }
 }

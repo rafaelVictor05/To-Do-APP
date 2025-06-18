@@ -13,7 +13,6 @@
             <Switch IsToggled="{Binding IsCompleted}" />
         </StackLayout>
         <Button Text="Salvar"
-        Command="{Binding SaveTaskCommand}"
         Clicked="OnSaveButton_Clicked" 
         BackgroundColor="Green"
         TextColor="White"

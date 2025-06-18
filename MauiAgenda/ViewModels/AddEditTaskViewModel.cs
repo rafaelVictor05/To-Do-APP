@@ -57,6 +57,6 @@ public partial class AddEditTaskViewModel : ObservableObject
             await _apiService.UpdateTaskAsync(task);
         }
 
-        await _tasksViewModel.GetTasksCommand.ExecuteAsync(null);
+        //await _tasksViewModel.GetTasksCommand.ExecuteAsync(null);
     }
 }
